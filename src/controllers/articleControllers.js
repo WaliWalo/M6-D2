@@ -1,15 +1,16 @@
 const mongoose = require("mongoose");
 const ArticleSchema = require("../models/articleModel");
-
+const q2m = require("query-to-mongo");
 const Article = mongoose.model("Article", ArticleSchema);
 
-const getArticles = (req, res) => {
-  Article.find({}, (err, article) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json(article);
-  });
+const getArticles = async (req, res) => {
+  const query = q2m(req.query);
+  const total = await Article.countDocuments(query.criteria);
+  const articles = await Article.find(query.criteria, query.options.fields)
+    .skip(query.options.skip)
+    .limit(query.options.limit)
+    .sort(query.options.sort);
+  res.send({ links: query.links("/articles", total), articles });
 };
 
 const addNewArticle = (req, res) => {

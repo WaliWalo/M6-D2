@@ -16,6 +16,25 @@ const ArticleSchema = new Schema(
       img: { type: String },
     },
     cover: { type: String },
+    reviews: [
+      {
+        text: {
+          type: String,
+          required: true,
+        },
+      },
+      {
+        user: {
+          type: String,
+          required: false,
+        },
+      },
+      {
+        date: {
+          type: Date,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );
